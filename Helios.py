@@ -142,3 +142,14 @@ def EraseFirmware(dacNum):
     This will cause the DAC to boot into SAM-BA bootloader which allows new firmware to be uploaded over USB.
     '''
     return _HeliosLib.EraseFirmware(dacNum)
+
+
+if __name__ == '__main__':
+    numDevices = OpenDevices()
+    print(f'Helios DACs found: {numDevices}')
+    if numDevices is 0: exit()
+    for num in range(numDevices):
+        name = GetName(num)
+        ver = GetFirmwareVersion(num)
+        print(f'Device {num}: {name} (FW ver. {ver})')
+    CloseDevices()
