@@ -46,8 +46,11 @@ _libs = {
     'linux':  './lib/libHeliosDacAPI.so',
     'darwin': './lib/HeliosDacAPI.dylib',
 }
-_HeliosLib = ctypes.cdll.LoadLibrary(_libs[sys.platform])
-print(f'Helios Library opened: {_libs[sys.platform]} ({sys.platform})')
+if sys.platform in _libs:
+    _HeliosLib = ctypes.cdll.LoadLibrary(_libs[sys.platform])
+    print(f'Helios Library opened: {_libs[sys.platform]} ({sys.platform})')
+else:
+    print(f'Platform unsupported: {sys.platform}')
 
 #print(_HeliosLib)
 #print( dir(_HeliosLib) )
@@ -145,6 +148,7 @@ def EraseFirmware(dacNum):
 
 
 if __name__ == '__main__':
+    if sys.platform not in _libs: exit()
     numDevices = OpenDevices()
     print(f'Helios DACs found: {numDevices}')
     if numDevices is 0: exit()
