@@ -172,6 +172,26 @@ def EraseFirmware(dacNum):
     return _HeliosLib.EraseFirmware(dacNum)
 
 
+def map_coord(x, xmin = -1, xmax = 1):
+    return int( (x - xmin) / (xmax - xmin) * 0xFFF )
+
+def map_color_comp(x, xmin = 0, xmax = 1):
+    return int( (x - xmin) / (xmax - xmin) * 0xFF )
+
+def map_color(r, g, b, i = 1, min = 0, max = 1):
+    return (
+        map_color_comp(r, min, max), 
+        map_color_comp(g, min, max),
+        map_color_comp(b, min, max), 
+        map_color_comp(i, min, max)
+    )
+
+def make_point(x=0, y=0, r=1, g=1, b=1, i=1):
+    return HeliosPoint(
+        map_coord(x), map_coord(y),
+        *map_color(r, g, b, i)
+    )
+
 if __name__ == '__main__':
     if sys.platform not in _libs: exit()
     numDevices = OpenDevices()
