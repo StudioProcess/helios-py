@@ -19,14 +19,37 @@ import ctypes
 import sys
 
 # Define point structure
-class HeliosPoint(ctypes.Structure):
-    #_pack_=1
+class Point(ctypes.Structure):
     _fields_ = [('x', ctypes.c_uint16),
                 ('y', ctypes.c_uint16),
                 ('r', ctypes.c_uint8),
                 ('g', ctypes.c_uint8),
                 ('b', ctypes.c_uint8),
                 ('i', ctypes.c_uint8)]
+    def __repr__(self):
+        # return f'Helios.Point(x={self.x}, y={self.y}, r={self.r}, g={self.g}, b={self.b}, i={self.i})'
+        return f'Helios.Point({self.x},{self.y}, {self.r},{self.g},{self.b},{self.i})'
+    
+HeliosPoint = Point # alias
+
+# Helper to create ctypes Arrays of Points
+# Call either with a single int to create a Frame with that many Points (initialized to 0)
+# or with a variable number of Point instances
+def Frame(*args):
+    def __repr__(self):
+        points = [repr(point) for point in self]
+        return f'Helios.Frame({", ".join(points)})'
+    
+    if type(args[0]) is int:
+        FrameType = Point * args[0] # https://docs.python.org/3/library/ctypes.html#arrays
+        setattr(FrameType, '__repr__', __repr__)
+        return FrameType()
+    else:
+        FrameType = Point * len(args)
+        setattr(FrameType, '__repr__', __repr__)
+        return FrameType(*args)
+
+HeliosFrame = Frame # alias
 
 # Flags for WriteFrame() flags argument
 FLAGS_DEFAULT           = 0x0
@@ -87,11 +110,13 @@ def WriteFrame(dacNum, pps, flags, points, numOfPoints):
         Bit 0 (LSB) = if true, start output immediately, instead of waiting for current frame (if there is one) to finish playing (FLAGS_START_IMMEDIATELY)
         Bit 1 = if true, play frame only once, instead of repeating until another frame is written (FLAGS_SINGLE_MODE)
         Bit 2-7 = reserved
-    points: Point data. Array of HeliosPoint objects
-    numOfPoints: number of points in the frame
+    points: Point data. Either Helios.Frame or list of Helios.Point
+    numOfPoints: number of points in the frame to draw
     Returns 1 if successful
     '''
-    return _HeliosLib.WriteFrame(dacNum, pps, flags, ctypes.pointer(points), numOfPoints)
+    if type(points) is list: points = Helios.Frame(*points)
+    # Note: Using ctypes.byref() instead of ctypes.pointer() cause it's faster apparently. See: https://docs.python.org/3/library/ctypes.html#ctypes.byref
+    return _HeliosLib.WriteFrame(dacNum, pps, flags, ctypes.byref(points), numOfPoints)
 
 def SetShutter(dacNum, shutterValue):
     '''Sets the shutter of the specified DAC
