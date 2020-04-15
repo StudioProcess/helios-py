@@ -137,7 +137,7 @@ def GetName(dacNum):
     Returns 0 if the proper name couldn't be fetched from the DAC
     Returns -1 if unsuccessful and name is not populated
     '''
-    name = ctypes.c_char_p( bytes(32) )
+    name = ctypes.create_string_buffer(32) # could also use ctypes.c_char_p() with bytes object
     ret = _HeliosLib.GetName(dacNum, name)
     if ret is 1:
         name = str(name.value, 'ascii')
@@ -150,7 +150,7 @@ def SetName(dacNum, name):
     Returns 1 if successful, 0 if the transfer failed
     '''
     name = name[:30] # limit length
-    name = ctypes.c_char_p( bytes(name, 'ascii') )
+    name = ctypes.create_string_buffer( bytes(name, 'ascii') ) # could also use ctypes.c_char_p()
     return _HeliosLib.SetName(dacNum, name)
 
 def Stop(dacNum):
