@@ -68,6 +68,7 @@ def interpolate(point_array, fullwidth_steps = 100, close = False):
     return out
 
 try:
+    info = {'points':0, 'pps':0, 'fps':0}
     while True:
         while Helios.GetStatus(0) is not 1:
             time.sleep(1/1000) # wait 1 ms
@@ -91,7 +92,10 @@ try:
         if 'fps' in cfg and cfg['fps'] > 0: pps = len(frame) * cfg['fps']
         else: pps = cfg['pps']
         pps = min(pps, 24000) # limit this
-        print(f'points: {len(frame)}, pps: {pps}, fps: {int(pps/len(frame))}')
+        new_info = { 'points':len(frame), 'pps':pps, 'fps':int(pps/len(frame)) }
+        if new_info != info:
+            info = new_info
+            print(f'points: {info["points"]}, pps: {info["pps"]}, fps: {info["fps"]}')
         Helios.WriteFrame(0, pps, Helios.FLAGS_DEFAULT, frame, len(frame))
         
         config.update(1)
