@@ -37,6 +37,19 @@ def transform(point_array, transformation_matrix):
         out.append( Helios.Point(int(p1[0]), int(p1[1]), p.r, p.g, p.b, p.i) )
     return out
 
+# barrel/pincushion distortion https://stackoverflow.com/a/6227310
+def barrel_distort(point_array, k=0, cx=0, cy=0):
+    out = []
+    for p in point_array:
+        dx = (p.x - cx) / 4095 # distance from center of distortion (but scaled to 0..1)
+        dy = (p.y - cy) / 4095
+        d = math.sqrt( dx*dx + dy*dy )
+        dd = d * (1 + k * d * d) # distorted distance
+        nx = cx + dx/d*dd * 4095
+        ny = cy + dy/d*dd * 4095
+        out.append( Helios.Point(int(nx), int(ny), p.r, p.g, p.b, p.i) )
+    return out
+
 def dist(x1, y1, x2, y2):
     return math.sqrt( math.pow(x2-x1, 2) + math.pow(y2-y1, 2) )
 
@@ -76,17 +89,18 @@ try:
         square = make_square(cfg['size'], (cfg['r']*bri, cfg['g']*bri, cfg['b']*bri, 1))
         
         mat = (
-            matrix.translate(cfg['translatex']*2048, cfg['translatey']*2048) * # 3. apply translation
+            matrix.translate(cfg['translatex']*2047, cfg['translatey']*2047) * # 3. apply translation
             matrix.rotate(cfg['rotate'], 2047, 2047) * # 2. apply rotatioin
             matrix.scale(cfg['scalex'], cfg['scaley'], 2047, 2047) # 1. apply scaling
         )
         if cfg['swapxy']: mat = matrix.swapxy() * mat # 4.
         if cfg['flipx']: mat = matrix.flipx(2047) * mat # 5.
         if cfg['flipy']: mat = matrix.flipy(2047) * mat # 6.
-        mat = matrix.keystone(cfg['keystonex']/4096, cfg['keystoney']/4096, 2047, 2047) * mat # 7. apply keystone correction
+        mat = matrix.keystone(cfg['keystonex']/4095, cfg['keystoney']/4095, 2047, 2047) * mat # 7. apply keystone correction
         square = transform( square, mat )
         
         square = interpolate(square, cfg['interpolation'], close = True)
+        square = barrel_distort(square, cfg['barrel'], 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
         frame = Helios.Frame(*square)
         # frame = Helios.Frame( Helios.make_point(1, 1) )
         if 'fps' in cfg and cfg['fps'] > 0: pps = len(frame) * cfg['fps']
