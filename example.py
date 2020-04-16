@@ -33,6 +33,7 @@ def transform(point_array, transformation_matrix):
     for p in point_array:
         p1 = transformation_matrix * [p.x, p.y, 1] # matrix multiplication
         p1 = p1[0] # get column vector
+        if p1[2] is not 1: p1[0] /= p1[2]; p1[1] /= p1[2]; p1[2] = 1 # Homogeneous coordinates
         out.append( Helios.Point(int(p1[0]), int(p1[1]), p.r, p.g, p.b, p.i) )
     return out
 
@@ -76,6 +77,7 @@ try:
         square = transform( square, matrix.scale(cfg['scalex'], cfg['scaley'], 2047, 2047) ) # apply scaling
         square = transform( square, matrix.rotate(cfg['rotate'], 2047, 2047) ) # apply rotation
         square = transform( square, matrix.translate(cfg['translatex']*2048, cfg['translatey']*2048) ) # apply translation
+        square = transform( square, matrix.keystone(cfg['keystonex']/4096, cfg['keystoney']/4096, 2047, 2047) )
         if cfg['swapxy']: square = transform( square, matrix.swapxy() )
         if cfg['flipx']: square = transform( square, matrix.flipx(2047) )
         if cfg['flipy']: square = transform( square, matrix.flipy(2047) )

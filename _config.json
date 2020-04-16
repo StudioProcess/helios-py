@@ -14,6 +14,9 @@
   "translatex": 0,
   "translatey": 0,
   
+  "keystonex": 0,
+  "keystoney": 0.2,
+  
   "swapxy": 0,
   "flipx": 0,
   "flipy": 0

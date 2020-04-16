@@ -104,6 +104,13 @@ def rotate(deg, ox = 0, oy = 0, ccw = False):
         translate(-ox, -oy)
     )
 
+def keystone(kx, ky, ox = 0, oy = 0):
+    return (
+        translate(ox, oy) *
+        matrix([ [1, 0, kx], [0, 1, ky], [0, 0, 1] ]) *
+        translate(-ox, -oy)
+    )
+
 if __name__ == '__main__':
     a = matrix([ [1, 2], [3, 4] ])
     b = matrix([ [1, 3], [2, 4] ])
