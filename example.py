@@ -1,6 +1,8 @@
 import Helios
 import time
 import config
+import math
+import matrix
 
 cfg = config.load('_config.json')
 
@@ -26,7 +28,14 @@ def make_square(size = 2, color = (1, 1, 1, 1)):
         # Helios.make_point(-r, +r, *color)
     ]
 
-import math
+def transform(point_array, transformation_matrix):
+    out = []
+    for p in point_array:
+        p1 = transformation_matrix * [p.x, p.y, 1] # matrix multiplication
+        p1 = p1[0] # get column vector
+        out.append( Helios.Point(int(p1[0]), int(p1[1]), p.r, p.g, p.b, p.i) )
+    return out
+
 def dist(x1, y1, x2, y2):
     return math.sqrt( math.pow(x2-x1, 2) + math.pow(y2-y1, 2) )
 
@@ -63,6 +72,14 @@ try:
             time.sleep(1/1000) # wait 1 ms
         bri = cfg['brightness']
         square = make_square(cfg['size'], (cfg['r']*bri, cfg['g']*bri, cfg['b']*bri, 1))
+        
+        square = transform( square, matrix.scale(cfg['scalex'], cfg['scaley'], 2047, 2047) ) # apply scaling
+        square = transform( square, matrix.rotate(cfg['rotate'], 2047, 2047) ) # apply rotation
+        square = transform( square, matrix.translate(cfg['translatex']*2048, cfg['translatey']*2048) ) # apply translation
+        if cfg['swapxy']: square = transform( square, matrix.swapxy() )
+        if cfg['flipx']: square = transform( square, matrix.flipx(2047) )
+        if cfg['flipy']: square = transform( square, matrix.flipy(2047) )
+        
         square = interpolate(square, cfg['interpolation'], close = True)
         frame = Helios.Frame(*square)
         # frame = Helios.Frame( Helios.make_point(1, 1) )

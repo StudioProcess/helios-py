@@ -1,10 +1,20 @@
 {
   "pps": 8,
   "fps": 60,
-  "size": 0.33,
+  "size": 1,
   "r": 1,
   "g": 0,
   "b": 0,
   "brightness": 0.33,
-  "interpolation": 200
+  "interpolation": 200,
+  
+  "scalex": 0.5,
+  "scaley": 0.5,
+  "rotate": 0,
+  "translatex": 0,
+  "translatey": 0,
+  
+  "swapxy": 0,
+  "flipx": 0,
+  "flipy": 0
 }
