@@ -12,11 +12,13 @@ _last_check = None
 
 def _update_config():
     global _config
-    _config.clear()
-    _config.update(_default_config)
     try:
+        new_config = {}
+        new_config.update(_default_config)
         with open(_config_file, 'r') as file:
-            new_config = json.load(file)
+            new_config.update( json.load(file) )
+        if new_config != _config: # only update if config has changed (this is actually a recursive dict comparison)
+            _config.clear()
             _config.update(new_config)
             print('Loaded', _config_file, _config)
     except Exception as e:
@@ -37,7 +39,7 @@ def load(config_file, default_config = {}):
     _update_config()
     return _config
 
-def update(min_secs = 3):
+def update(min_secs = 0):
     global _last_check
     current_time = time.time()
     if _last_check is not None and current_time - _last_check < min_secs:
