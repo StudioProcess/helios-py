@@ -11,13 +11,12 @@
   "scalex": 0.5,
   "scaley": 0.5,
   "rotate": 0,
-  "translatex": 0,
-  "translatey": 0,
-  
-  "keystonex": 0,
-  "keystoney": 0.2,
+  "translatex": 0.0,
+  "translatey": 0.0,
   
   "swapxy": 0,
   "flipx": 0,
-  "flipy": 0
+  "flipy": 0,
+  "keystonex": 0.0,
+  "keystoney": 0.0
 }
