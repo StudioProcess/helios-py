@@ -3,6 +3,25 @@ import time
 import os.path
 from inotify_simple import INotify, flags
 
+class Config():
+    '''Simple wrapper for a dict.
+    Allows read access to dict via item access `config['key']` and attribute access `config.key`.
+    Implements iteration as well as mebership test operators.
+    '''
+    def __init__(self, init_dict = {}):
+        if type(init_dict) is dict: self.dict = init_dict
+        else: self.dict = {}
+    def __getitem__(self, key):
+        return self.dict[key]
+    def __getattr__(self, name):
+        return self.dict[name]
+    def __iter__(self):
+        return self.dict.__iter__()
+    def __contains__(self, item):
+        return self.dict.__contains__(item)
+    def __repr__(self):
+        return f'Config({self.dict.__repr__()})'
+
 _config_file = None
 _config = {}
 _default_config = None
@@ -37,7 +56,7 @@ def load(config_file, default_config = {}):
     if _inotify:
         _wd = _inotify.add_watch(dir, flags.CREATE | flags.MODIFY)
     _update_config()
-    return _config
+    return Config(_config)
 
 def update(min_secs = 0):
     global _last_check

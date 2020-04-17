@@ -85,26 +85,26 @@ try:
     while True:
         while Helios.GetStatus(0) is not 1:
             time.sleep(1/1000) # wait 1 ms
-        bri = cfg['brightness']
-        square = make_square(cfg['size'], (cfg['r']*bri, cfg['g']*bri, cfg['b']*bri, 1))
+        bri = cfg.brightness
+        square = make_square(cfg.size, (cfg.r*bri, cfg.g*bri, cfg.b*bri, 1))
         
         mat = (
-            matrix.translate(cfg['translatex']*2047, cfg['translatey']*2047) * # 3. apply translation
-            matrix.rotate(cfg['rotate'], 2047, 2047) * # 2. apply rotatioin
-            matrix.scale(cfg['scalex'], cfg['scaley'], 2047, 2047) # 1. apply scaling
+            matrix.translate(cfg.translatex*2047, cfg.translatey*2047) * # 3. apply translation
+            matrix.rotate(cfg.rotate, 2047, 2047) * # 2. apply rotatioin
+            matrix.scale(cfg.scalex, cfg.scaley, 2047, 2047) # 1. apply scaling
         )
-        if cfg['swapxy']: mat = matrix.swapxy() * mat # 4.
-        if cfg['flipx']: mat = matrix.flipx(2047) * mat # 5.
-        if cfg['flipy']: mat = matrix.flipy(2047) * mat # 6.
-        mat = matrix.keystone(cfg['keystonex']/4095, cfg['keystoney']/4095, 2047, 2047) * mat # 7. apply keystone correction
+        if cfg.swapxy: mat = matrix.swapxy() * mat # 4.
+        if cfg.flipx: mat = matrix.flipx(2047) * mat # 5.
+        if cfg.flipy: mat = matrix.flipy(2047) * mat # 6.
+        mat = matrix.keystone(cfg.keystonex/4095, cfg.keystoney/4095, 2047, 2047) * mat # 7. apply keystone correction
         square = transform( square, mat )
         
-        square = interpolate(square, cfg['interpolation'], close = True)
-        square = barrel_distort(square, cfg['barrel'], 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
+        square = interpolate(square, cfg.interpolation, close = True)
+        square = barrel_distort(square, cfg.barrel, 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
         frame = Helios.Frame(*square)
         # frame = Helios.Frame( Helios.make_point(1, 1) )
-        if 'fps' in cfg and cfg['fps'] > 0: pps = len(frame) * cfg['fps']
-        else: pps = cfg['pps']
+        if 'fps' in cfg and cfg.fps > 0: pps = len(frame) * cfg.fps
+        else: pps = cfg.pps
         pps = min(pps, 24000) # limit this
         new_info = { 'points':len(frame), 'pps':pps, 'fps':int(pps/len(frame)) }
         if new_info != info:
