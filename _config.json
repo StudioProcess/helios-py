@@ -1,4 +1,5 @@
 {
+  // Note: pps is ignored when fps is given
   "pps": 8,
   "fps": 60,
   "size": 1,

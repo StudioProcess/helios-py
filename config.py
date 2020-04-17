@@ -1,6 +1,7 @@
 import json
 import time
 import os.path
+import re
 from inotify_simple import INotify, flags
 
 class Config():
@@ -35,7 +36,9 @@ def _update_config():
         new_config = {}
         new_config.update(_default_config)
         with open(_config_file, 'r') as file:
-            new_config.update( json.load(file) )
+            text = file.read()
+        text = re.sub(r'\s*(//|#).*$', '', text, flags=re.MULTILINE)
+        new_config.update( json.loads(text) )
         if new_config != _config: # only update if config has changed (this is actually a recursive dict comparison)
             _config.clear()
             _config.update(new_config)
