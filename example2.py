@@ -1,4 +1,5 @@
 import Helios
+from helpers import make_point
 import time
 import config
 import math
@@ -80,16 +81,16 @@ color = (1, 1, 1, 1)
 for e in d:
     x = float(e[0])
     y = float(e[1])
-    p.append( Helios.make_point(x, y, *color, 0, 600) )
+    p.append( make_point(x, y, *color, 0, 600) )
 
 def make_square(size = 2, color = (1, 1, 1, 1)):
     r = size/2
     return [
-        Helios.make_point(-r, +r, *color),
-        Helios.make_point(-r, -r, *color),
-        Helios.make_point(+r, -r, *color),
-        Helios.make_point(+r, +r, *color),
-        # Helios.make_point(-r, +r, *color)
+        make_point(-r, +r, *color),
+        make_point(-r, -r, *color),
+        make_point(+r, -r, *color),
+        make_point(+r, +r, *color),
+        # make_point(-r, +r, *color)
     ]
 
 def transform(point_array, transformation_matrix):
@@ -167,7 +168,7 @@ try:
         square = interpolate(square, cfg.interpolation, close = True)
         square = barrel_distort(square, cfg.barrel, 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
         frame = Helios.Frame(*square)
-        # frame = Helios.Frame( Helios.make_point(1, 1) )
+        # frame = Helios.Frame( make_point(1, 1) )
         if 'fps' in cfg and cfg.fps > 0: pps = len(frame) * cfg.fps
         else: pps = cfg.pps
         pps = min(pps, 24000) # limit this
