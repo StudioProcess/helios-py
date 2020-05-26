@@ -1,4 +1,5 @@
 from Helios import Point as _Point
+from Helios import Frame as _Frame
 
 def map_coord(x, xmin = -1, xmax = 1):
     '''Map coordinate value to 12 bit range [0,0xFFF]'''
@@ -25,3 +26,20 @@ def make_point(x=0, y=0, r=1, g=1, b=1, i=1, xmin=-1, xmax=1, ymin=None, ymax=No
         map_coord(x, xmin, xmax), map_coord(y, ymin, ymax),
         *map_color(r, g, b, i, colormin, colormax)
     )
+
+def color_shift_frame(frame, shift_val):
+    '''Shift color values in frame (relative to positions)'''
+    n = len(frame)
+    out = _Frame(n)
+    for i, p in enumerate(frame):
+        out[i].x = p.x
+        out[i].y = p.y
+        j = i - shift_val # shifted index (for color components)
+        while j < 0: j += n
+        j %= n
+        q = frame[j]
+        out[i].r = q.r
+        out[i].g = q.g
+        out[i].b = q.b
+        out[i].i = q.i
+    return out

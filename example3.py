@@ -1,6 +1,7 @@
 import Helios
 from helpers import make_point
 from helpers import map_coord
+from helpers import color_shift_frame
 import time
 import config
 import math
@@ -143,10 +144,6 @@ def interpolate(point_array, fullwidth_steps = 100, close = False):
         # print(i, d, n)
     return out
 
-art = test_pattern2()
-art = interpolate_linestrips( art, 10 )
-print(art)
-# exit()
 
 try:
     info = {'points':0, 'pps':0, 'fps':0}
@@ -172,6 +169,7 @@ try:
         # square = interpolate(square, cfg.interpolation, close = True)
         art = barrel_distort(art, cfg.barrel, 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
         frame = Helios.Frame(*art)
+        frame = color_shift_frame(frame, cfg.color_shift)
         # frame = Helios.Frame( make_point(1, 1) )
         if 'fps' in cfg and cfg.fps > 0: pps = len(frame) * cfg.fps
         else: pps = cfg.pps
