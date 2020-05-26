@@ -7,6 +7,7 @@
   "color_off": [0, 0, 0.5, 0 ],
   "brightness": 0.3,
   "interpolation": 100,
+  // Color shift per 10kpps
   "color_shift": 2,
   
   "scalex": 0.3,

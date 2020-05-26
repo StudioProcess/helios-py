@@ -152,7 +152,6 @@ try:
             time.sleep(1/1000) # wait 1 ms
         bri = cfg.brightness
         
-        # square = make_square(cfg.size, (cfg.r*bri, cfg.g*bri, cfg.b*bri, 1))
         art = test_pattern1()
         art = interpolate_linestrips( art, cfg.interpolation, color=scale_color(cfg.color,bri), color_off=scale_color(cfg.color_off,bri) )
         mat = (
@@ -165,19 +164,19 @@ try:
         if cfg.flipy: mat = matrix.flipy(2047) * mat # 6.
         mat = matrix.keystone(cfg.keystonex/4095, cfg.keystoney/4095, 2047, 2047) * mat # 7. apply keystone correction
         art = transform( art, mat )
-        
-        # square = interpolate(square, cfg.interpolation, close = True)
         art = barrel_distort(art, cfg.barrel, 2047, 2047) # use this on interpolated points, this transform doesn't preserve straight lines
         frame = Helios.Frame(*art)
-        frame = color_shift_frame(frame, cfg.color_shift)
-        # frame = Helios.Frame( make_point(1, 1) )
+        
         if 'fps' in cfg and cfg.fps > 0: pps = len(frame) * cfg.fps
         else: pps = cfg.pps
         pps = min(pps, 24000) # limit this
-        new_info = { 'points':len(frame), 'pps':pps, 'fps':int(pps/len(frame)) }
+        color_shift = int(pps/10000*cfg.color_shift)
+        new_info = { 'points':len(frame), 'pps':pps, 'fps':int(pps/len(frame)), 'color_shift':color_shift }
         if new_info != info:
             info = new_info
-            print(f'points: {info["points"]}, pps: {info["pps"]}, fps: {info["fps"]}')
+            print(f'points: {info["points"]}, pps: {info["pps"]}, fps: {info["fps"]}, color_shift: {info["color_shift"]}')
+            
+        frame = color_shift_frame(frame, color_shift)
         Helios.WriteFrame(0, pps, Helios.FLAGS_DEFAULT, frame, len(frame))
         
         config.update(1)

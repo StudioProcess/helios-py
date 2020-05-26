@@ -28,7 +28,8 @@ def make_point(x=0, y=0, r=1, g=1, b=1, i=1, xmin=-1, xmax=1, ymin=None, ymax=No
     )
 
 def color_shift_frame(frame, shift_val):
-    '''Shift color values in frame (relative to positions)'''
+    '''Shift color values in frame (relative to positions) to compensate for scanner movement lag'''
+    shift_val = round(shift_val)
     n = len(frame)
     out = _Frame(n)
     for i, p in enumerate(frame):
