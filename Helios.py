@@ -17,6 +17,7 @@ cannot receive a new frame until the currently playing frame finishes, freeing u
 
 import ctypes
 import sys
+import os.path as _path
 
 # Define point structure
 class Point(ctypes.Structure):
@@ -66,12 +67,13 @@ LOG_LEVEL_DEBUG   = 4 # debug and informational messages are printed to stdout, 
 
 # Load and initialize library
 _libs = {
-    'linux':  './lib/libHeliosDacAPI.so',
-    'darwin': './lib/HeliosDacAPI.dylib',
+    'linux':  'lib/libHeliosDacAPI.so',
+    'darwin': 'lib/HeliosDacAPI.dylib',
 }
 if sys.platform in _libs:
-    _HeliosLib = ctypes.cdll.LoadLibrary(_libs[sys.platform])
-    print(f'Helios Library opened: {_libs[sys.platform]} ({sys.platform})')
+    lib_path = _path.join(  _path.dirname(_path.abspath(__file__)), _libs[sys.platform] )
+    _HeliosLib = ctypes.cdll.LoadLibrary(lib_path)
+    print(f'Helios Library opened: {lib_path} ({sys.platform})')
 else:
     print(f'Platform unsupported: {sys.platform}')
 
