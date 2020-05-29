@@ -1,2 +1,0 @@
-Built on: Linux 5.3.0-7642-generic
-Build date: Di Apr 14 17:06:31 CEST 2020

@@ -1,5 +1,5 @@
-from Helios import Point as _Point
-from Helios import Frame as _Frame
+from .Helios import Point as _Point
+from .Helios import Frame as _Frame
 
 def map_coord(x, xmin = -1, xmax = 1):
     '''Map coordinate value to 12 bit range [0,0xFFF]'''

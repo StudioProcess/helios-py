@@ -1,2 +1,0 @@
-Built on: Mac OS X 10.15.4
-Build date: Tue Apr 14 16:51:39 CEST 2020

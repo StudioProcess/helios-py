@@ -1,11 +1,9 @@
-import Helios
-from helpers import make_point
-from helpers import map_coord
-from helpers import color_shift_frame
+from helios import Helios
+from helios.helpers import make_point, map_coord, color_shift_frame
+from helios import matrix
 import time
 import config
 import math
-import matrix
 
 cfg = config.load('_config.json')
 

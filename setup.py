@@ -12,7 +12,7 @@ setup(
     url='https://github.com/StudioProcess/helios-py',
     author='Martin Grödl',
     author_email='martin@process.studio',
-    py_modules=['Helios', 'helpers', 'matrix'], # modules that aren't part of a package
-    data_files=[('lib', listdir('lib'))], # include libs
+    packages=['helios'], # required
+    include_package_data=True, # automatically includes data files (lib dir, in this case)
     platforms=['MacOS, Linux'],
 )

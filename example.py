@@ -1,9 +1,9 @@
-import Helios
-from helpers import make_point
+from helios import Helios
+from helios.helpers import make_point
+from helios import matrix
 import time
 import config
 import math
-import matrix
 
 cfg = config.load('_config.json')
 
