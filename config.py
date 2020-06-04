@@ -2,7 +2,8 @@ import json
 import time
 import os.path
 import re
-from inotify_simple import INotify, flags
+try: from inotify_simple import INotify, flags
+except: pass
 
 class Config():
     '''Simple wrapper for a dict.
