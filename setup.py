@@ -13,6 +13,7 @@ setup(
     author='Martin Grödl',
     author_email='martin@process.studio',
     packages=['helios'], # required
-    include_package_data=True, # automatically includes data files (lib dir, in this case)
+    # include_package_data=True, # automatically includes data files (lib dir, in this case) -> doesn't seem to work when installing from git
+    package_data={ 'helios': ['lib/*'] }, # inlcude lib files
     platforms=['MacOS, Linux'],
 )
