@@ -18,14 +18,21 @@ def map_color(r, g, b, i = 1, min = 0, max = 1):
         map_color_comp(i, min, max)
     )
 
-def make_point(x=0, y=0, r=1, g=1, b=1, i=1, xmin=-1, xmax=1, ymin=None, ymax=None, colormin=0, colormax=1):
+def clip_coord(x):
+    '''Clip coordinate value to [0,0xFFF]'''
+    return min(0xFFF, max(0, x))
+
+def make_point(x=0, y=0, r=1, g=1, b=1, i=1, xmin=-1, xmax=1, ymin=None, ymax=None, colormin=0, colormax=1, clip=True):
     '''Create Helios.Point instance while mapping value ranges'''
     if ymin is None: ymin = xmin
     if ymax is None: ymax = xmax
-    return _Point(
-        map_coord(x, xmin, xmax), map_coord(y, ymin, ymax),
-        *map_color(r, g, b, i, colormin, colormax)
-    )
+    x = map_coord(x, xmin, xmax)
+    y = map_coord(y, ymin, ymax)
+    if clip:
+        x = clip_coord(x)
+        y = clip_coord(y)
+    c = map_color(r, g, b, i, colormin, colormax)
+    return _Point(x, y, *c)
 
 def color_shift_frame(frame, shift_val):
     '''Shift color values in frame (relative to positions) to compensate for scanner movement lag'''
